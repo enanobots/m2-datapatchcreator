@@ -82,7 +82,7 @@ abstract class AbstractController extends Action
                     $this->messageManager->addSuccessMessage(
                         __(
                             '%1 Data Patch file(s) have been created, location: %2',
-                            count($patchesData['patchCount']),
+                            $patchesData['patchCount'],
                             $patchesData['patchLocation'],
                         )
                     );
