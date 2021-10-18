@@ -31,7 +31,7 @@
             "src/registration.php"
         ],
         "psr-4": {
-            "Nanobots\\DataPatchCreator\\": ""
+            "Nanobots\\DataPatchCreator\\": "src/"
         }
     }
 }
