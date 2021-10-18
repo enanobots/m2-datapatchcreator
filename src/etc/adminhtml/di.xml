@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+/**
+ * Copyright © Q-Solutions Studio: eCommerce Nanobots. All rights reserved.
+ *
+ * @category    Nanobots
+ * @package     Nanobots_DataPatchCreator
+ * @author      Jakub Winkler <jwinkler@qsolutionsstudio.com
+ * @author      Sebastian Strojwas <sebastian@qsolutionsstudio.com>
+ * @author      Wojtek Wnuk <wojtek@qsolutionsstudio.com>
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+	<preference for="Magento\Config\Block\System\Config\Edit"
+                type="Nanobots\DataPatchCreator\Block\System\Config\Edit"/>
+
+    <preference for="Magento\Catalog\Block\Adminhtml\Product\Attribute\Edit"
+                type="Nanobots\DataPatchCreator\Block\Adminhtml\Product\Attribute\Edit" />
+
+    <preference for="Magento\Catalog\Block\Adminhtml\Product\Attribute\Grid"
+                type="Nanobots\DataPatchCreator\Block\Adminhtml\Product\Attribute\Grid" />
+</config>

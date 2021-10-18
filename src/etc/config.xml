@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+/**
+ * Copyright © Q-Solutions Studio: eCommerce Nanobots. All rights reserved.
+ *
+ * @category    Nanobots
+ * @package     Nanobots_DataPatchCreator
+ * @author      Jakub Winkler <jwinkler@qsolutionsstudio.com
+ * @author      Sebastian Strojwas <sebastian@qsolutionsstudio.com>
+ * @author      Wojtek Wnuk <wojtek@qsolutionsstudio.com>
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <nanobots_datapatchcreator>
+            <settings>
+                <enabled>1</enabled>
+                <module>Nanobots_DataPatchCreator</module>
+            </settings>
+            <export>
+                <namespace>Nanobots</namespace>
+                <module>DataPatchCreator</module>
+                <type>0</type>
+                <local_path>{{baseDir}}/var/patches/</local_path>
+            </export>
+            <images>
+                <swatches>1</swatches>
+                <sync>1</sync>
+                <sync_model>LocalFile</sync_model>
+                <local_folder>{{baseDir}}/var/images/</local_folder>
+            </images>
+        </nanobots_datapatchcreator>
+    </default>
+</config>

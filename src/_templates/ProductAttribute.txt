@@ -1,0 +1,213 @@
+<?php
+/**
+ * Created with Nanobots_DataPatchCreator
+ * @author      Jakub Winkler <jwinkler@qsolutionsstudio.com>
+ * @author      Sebastian Strojwas <sebastian@qsolutionsstudio.com>
+ * @author      Wojtek Wnuk <wojtek@qsolutionsstudio.com>
+ *
+ * @category    {{var namespace}}
+ * @package     {{var namespace}}_{{var module}}
+ */
+
+namespace {{var namespace}}\{{var module}}\Setup\Patch\Data;
+
+use Magento\Eav\Model\Entity\Attribute\FrontendLabelFactory;
+use Magento\Catalog\Model\Product\Attribute\Repository;
+use Magento\Eav\Setup\EavSetupFactory;
+use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\DB\Adapter\Pdo\MySql;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Setup\ModuleDataSetupInterface;
+use Magento\Framework\Setup\Patch\DataPatchInterface;{{if imageSync}}
+use Magento\Framework\Filesystem\Io\File as FileIo;
+use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\Filesystem\DirectoryList;{{/if}}
+use Psr\Log\LoggerInterface;
+use Zend_Db_Adapter_Exception;
+
+class {{var class}} implements DataPatchInterface
+{
+    /** @var EavSetupFactory  */
+    protected $eavSetupFactory;
+
+    /** @var ModuleDataSetupInterface  */
+    protected $dataSetup;
+
+    /** @var LoggerInterface  */
+    protected $logger;
+
+    /** @var Repository  */
+    protected $attributeRepository;
+
+    /** @var AdapterInterface|MySql */
+    protected $connection;{{if imageSync}}
+
+    /** @var File  */
+    protected $fileDriver;
+
+    /** @var DirectoryList  */
+    protected $directoryList;
+
+    /** @var FileIo */
+    protected $fileIo;{{/if}}
+
+    /** @var FrontendLabelFactory  */
+    protected $frontendLabelFactory;
+
+    /**
+     * @param FrontendLabelFactory $frontendLabelFactory
+     * @param ResourceConnection $resourceConnection
+     * @param Repository $attributeRepository
+     * @param EavSetupFactory $eavSetupFactory
+     * @param ModuleDataSetupInterface $dataSetup{{if imageSync}}
+     * @param File $fileDriver
+     * @param DirectoryList $directoryList
+     * @param FileIo $fileIo{{/if}}
+     * @param LoggerInterface $logger
+     */
+    public function __construct(
+        FrontendLabelFactory $frontendLabelFactory,
+        ResourceConnection $resourceConnection,
+        Repository $attributeRepository,
+        EavSetupFactory $eavSetupFactory,
+        ModuleDataSetupInterface $dataSetup,{{if imageSync}}
+        File $fileDriver,
+        DirectoryList $directoryList,
+        FileIo $fileIo,{{/if}}
+        LoggerInterface $logger
+    ) {
+        $this->frontendLabelFactory = $frontendLabelFactory;
+        $this->connection = $resourceConnection->getConnection();
+        $this->attributeRepository = $attributeRepository;
+        $this->eavSetupFactory = $eavSetupFactory;
+        $this->dataSetup = $dataSetup;{{if imageSync}}
+        $this->fileDriver = $fileDriver;
+        $this->directoryList = $directoryList;
+        $this->fileIo = $fileIo;{{/if}}
+        $this->logger = $logger;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getDependencies(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAliases(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function apply(): self
+    {
+        $eavSetup = $this->eavSetupFactory->create(['setup' => $this->dataSetup]);
+
+        try {
+            $eavSetup->addAttribute(
+                \Magento\Catalog\Model\Product::ENTITY,
+                '{{var attributeCode}}',
+                {{var attributeData}}
+            );
+
+            {{if storeLabels}} /** install store labels */
+            $labelArray = {{var storeLabels}};
+            $storeLabels = [];
+
+            foreach ($labelArray as $storeId => $label) {
+                $storeLabels[] = $this->frontendLabelFactory->create()
+                    ->setStoreId($storeId)
+                    ->setLabel($label);
+            }
+
+            $attribute = $this->attributeRepository->get('{{var attributeCode}}');
+            $attribute->setFrontendLabels($storeLabels); {{/if}}{{if additionalData}}
+            $attribute->setData('additional_data',
+                {{var additionalData}});{{/if}}
+            $this->attributeRepository->save($attribute);
+
+            /** recreate attribute options with MySQL **/
+            {{if attributeOptions}}$optionsData = {{var attributeOptions}};
+
+            $sortOrder = 0;
+            foreach ($optionsData as $optionData) {
+                $optionId = $this->_insertAttributeOption($attribute->getAttributeId(), $sortOrder);
+                $sortOrder++;
+
+                if ($optionId) {
+                    foreach ($optionData['labels'] as $label) {
+                        $this->connection->insert(
+                            $this->connection->getTableName('eav_attribute_option_value'),
+                            [
+                                'option_id' => $optionId,
+                                'store_id' => $label['store_id'],
+                                'value' => $label['value'],
+                            ]
+                        );
+                    }
+
+                    foreach ($optionData['swatches'] as $swatch) {
+                        $this->connection->insert(
+                            $this->connection->getTableName('eav_attribute_option_swatch'),
+                            [
+                                'option_id' => $optionId,
+                                'store_id' => $swatch['store_id'],
+                                'type' => $swatch['type'],
+                                'value' => $swatch['value'],
+                            ]
+                        );
+                    }
+                }
+            }{{/if}}
+
+            {{if imageSync}}$imageSwatches = {{var swatchImages}};
+
+            $swatchDir = $this->directoryList->getPath(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA) .
+                DIRECTORY_SEPARATOR . \Magento\Swatches\Helper\Media::SWATCH_MEDIA_PATH;
+
+            foreach ($imageSwatches as $path => $content) {
+                $imageSwatchPath = $swatchDir . $path;
+                $destinationFolder = $this->fileIo->getDestinationFolder($imageSwatchPath);
+                $this->fileIo->checkAndCreateFolder($destinationFolder, 0777);
+                $this->fileDriver->filePutContents(
+                    $imageSwatchPath,
+                    base64_decode($content, true)
+                );
+            } {{/if}}
+        } catch (LocalizedException | \Zend_Validate_Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        return $this;
+    }
+
+    /**
+     * Insert attribute options using MySQL
+     *
+     * @param int $attributeId
+     * @param int $sortOrder
+     * @return int
+     * @throws Zend_Db_Adapter_Exception
+     */
+    private function _insertAttributeOption(int $attributeId, int $sortOrder): int
+    {
+        $optionTable = $this->connection->getTableName('eav_attribute_option');
+        $this->connection->insert(
+            $optionTable,
+            [
+                'attribute_id' => $attributeId,
+                'sort_order' => $sortOrder,
+            ]
+        );
+
+        return $this->connection->lastInsertId($optionTable);
+    }
+}

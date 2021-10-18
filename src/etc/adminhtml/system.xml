@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+/**
+ * Copyright © Q-Solutions Studio: eCommerce Nanobots. All rights reserved.
+ *
+ * @category    Nanobots
+ * @package     Nanobots_DataPatchCreator
+ * @author      Jakub Winkler <jwinkler@qsolutionsstudio.com
+ * @author      Sebastian Strojwas <sebastian@qsolutionsstudio.com>
+ * @author      Wojtek Wnuk <wojtek@qsolutionsstudio.com>
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="nanobots" sortOrder="100" translate="label" class="nanobots">
+            <label>Nanobots</label>
+        </tab>
+        <section id="nanobots_datapatchcreator" translate="label" sortOrder="1000" showInDefault="1">
+            <class>nanobots</class>
+            <label><![CDATA[DataPatch Creator]]></label>
+            <tab>nanobots</tab>
+            <resource>Nanobots_DataPatchCreator::config</resource>
+            <group id="settings" translate="label" type="text" sortOrder="10" showInDefault="1">
+                <label>Configuration</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+
+            <group id="export" translate="label" type="text" sortOrder="10" showInDefault="1">
+                <label>Export Configuration</label>
+                <field id="namespace" translate="label comment" type="text" sortOrder="10" showInDefault="1">
+                    <label>Module Namespace</label>
+                    <comment>You can specify your module / company namespace for data patch creation</comment>
+                </field>
+                <field id="module" translate="label" type="text" sortOrder="30" showInDefault="1">
+                    <label>Module Name</label>
+                    <comment>Here you can specify the module name</comment>
+                </field>
+                <field id="type" translate="label" type="select" sortOrder="40" showInDefault="1">
+                    <label>Data Patch Files Delivery</label>
+                    <comment><![CDATA[Here you determine how Data Patch files are created and delivered to you <br/>
+<ul>
+<li><strong>Download dataPatch files</strong> - files are downloaded by the browser</li>
+<li><strong>Local file creation</strong> - data patch file is created in specified module directory. If directory
+does not exists, it will be created</li>
+</ul>]]></comment>
+                    <source_model>Nanobots\DataPatchCreator\Model\Config\Source\ExportType</source_model>
+                </field>
+                <field id="local_path" translate="label" type="text" sortOrder="50" showInDefault="1">
+                    <label>Local Path for file creation</label>
+                    <comment><![CDATA[<strong>{{baseDir}}</strong> - working Magento 2 directory]]></comment>
+                    <depends>
+                        <field id="type">1</field>
+                    </depends>
+                </field>
+                <depends>
+                    <field id="*/settings/enabled">1</field>
+                </depends>
+            </group>
+
+            <group id="images" translate="label" type="text" sortOrder="100" showInDefault="1">
+                <label>Images DataPatch Export/Creation Settings</label>
+                <field id="swatches" translate="label comment" type="select" sortOrder="60" showInDefault="1">
+                    <label>Encode Product Swatch Images to Base64</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>This will add base64 images content to exported PHP files. If set to NO, images are not added data patches</comment>
+                </field>
+
+                <field id="sync" translate="label" type="select" sortOrder="100" showInDefault="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Extend this with plugins and by implementing a proper Interface</comment>
+                </field>
+
+                <field id="sync_model" translate="label" type="select" sortOrder="150" showInDefault="1">
+                    <label>Image Synchronization Method</label>
+                    <source_model>Nanobots\DataPatchCreator\Model\Config\Source\SyncMethods</source_model>
+                    <comment><![CDATA[<strong>IMPORTANT:</strong> If you extend image sync options, make sure they are present on target Magento 2 code base]]></comment>
+                    <depends>
+                        <field id="sync">1</field>
+                    </depends>
+                </field>
+
+                <field id="local_folder" translate="label" type="text" sortOrder="200" showInDefault="1">
+                    <label>Local path for image synchronization</label>
+                    <comment><![CDATA[File will be copied from this location to Magento folder upon data patch installation <br />
+                        <strong>IMPORTANT:</strong> finish with /]]></comment>
+                    <depends>
+                        <field id="sync">1</field>
+                    </depends>
+                </field>
+
+                <depends>
+                    <field id="*/settings/enabled">1</field>
+                </depends>
+            </group>
+        </section>
+    </system>
+</config>

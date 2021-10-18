@@ -1,0 +1,116 @@
+<?php
+/**
+ * Created with Nanobots_DataPatchCreator
+ * @author      Jakub Winkler <jwinkler@qsolutionsstudio.com>
+ * @author      Sebastian Strojwas <sebastian@qsolutionsstudio.com>
+ * @author      Wojtek Wnuk <wojtek@qsolutionsstudio.com>
+ *
+ * @category    {{var namespace}}
+ * @package     {{var namespace}}_{{var module}}
+ */
+
+namespace {{var namespace}}\{{var module}}\Setup\Patch\Data;
+
+use Exception;
+use Magento\Cms\Model\BlockFactory;
+use Magento\Cms\Model\ResourceModel\Block as BlockResource;
+use Magento\Framework\Setup\Patch\DataPatchInterface; {{if imageSync}}
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Nanobots\DataPatchCreator\Model\DataPatchExport\AbstractExport;
+use Nanobots\DataPatchCreator\Model\ImagesSync\ImageSync;
+use Nanobots\DataPatchCreator\Model\ImagesSync\ImageSyncInterface; {{/if}}
+
+class {{var class}} implements DataPatchInterface
+{
+    /** @var BlockFactory */
+    private $blockFactory;
+
+    /** @var BlockResource */
+    private $blockResource;
+
+    {{if imageSync}}/** @var ScopeConfigInterface  */
+    protected $scopeConfig;
+
+    /** @var ImageSync  */
+    protected $imageSync;
+
+    {{/if}}/** {{if imageSync}}
+     * @param ImageSync $imageSync
+     * @param ScopeConfigInterface $scopeConfig {{/if}}
+     * @param BlockFactory $blockFactory
+     * @param BlockResource $blockResource
+     */
+    public function __construct( {{if imageSync}}
+        ImageSync $imageSync,
+        ScopeConfigInterface $scopeConfig, {{/if}}
+        BlockFactory $blockFactory,
+        BlockResource $blockResource
+    ) { {{if imageSync}}
+        $this->imageSync = $imageSync;
+        $this->scopeConfig = $scopeConfig; {{/if}}
+        $this->blockFactory = $blockFactory;
+        $this->blockResource = $blockResource;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getDependencies(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAliases(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
+    public function apply(): self
+    {
+        try {
+            $cmsBlock = $this->blockFactory->create();
+            $this->blockResource->load($cmsBlock, '{{var blockIdentifier}}', 'identifier');
+            $cmsBlock->addData({{var blockData}});
+            $this->blockResource->save($cmsBlock); {{if imageSync}}
+
+            $syncModel = $this->getSyncModel();
+            if ($syncModel instanceof ImageSyncInterface) {
+               foreach ($this->getBlockImages() as $image) {
+                   $syncModel->fetchImage($image);
+               }
+            } {{/if}}
+            return $this;
+        } catch (Exception $e) {
+            throw new Exception(__('Cannot save CMS Block: %1', $e->getMessage()));
+        }
+    } {{if imageSync}}
+
+    /**
+     * Get ImageSync Model
+     *
+     * @return ImageSyncInterface
+     */
+    public function getSyncModel(): ImageSyncInterface
+    {
+        return $this->imageSync->getSyncModel(
+          $this->scopeConfig->getValue(AbstractExport::XPATH_CONFIG_IMAGE_SYNC_MODEL)
+        );
+    }
+
+    /**
+     * Images associated with the page
+     *
+     * @return array
+     */
+    public function getBlockImages(): array
+    {
+        return {{var imgArray}};
+    } {{/if}}
+}

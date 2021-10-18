@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Q-Solutions Studio: eCommerce Nanobots. All rights reserved.
+ *
+ * @category    Nanobots
+ * @package     Nanobots_DataPatchCreator
+ * @author      Jakub Winkler <jwinkler@qsolutionsstudio.com
+ * @author      Sebastian Strojwas <sebastian@qsolutionsstudio.com>
+ * @author      Wojtek Wnuk <wojtek@qsolutionsstudio.com>
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\Export\ProductAttribute">
+        <arguments>
+            <argument name="dataPatchExport" xsi:type="object">Nanobots\DataPatchCreator\Model\DataPatchExport\ProductAttribute</argument>
+        </arguments>
+    </type>
+
+    <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\Export\Configuration">
+        <arguments>
+            <argument name="dataPatchExport" xsi:type="object">Nanobots\DataPatchCreator\Model\DataPatchExport\Configuration</argument>
+        </arguments>
+    </type>
+
+    <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\Export\CmsPage">
+        <arguments>
+            <argument name="dataPatchExport" xsi:type="object">Nanobots\DataPatchCreator\Model\DataPatchExport\CmsPage</argument>
+        </arguments>
+    </type>
+
+    <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\Export\CmsBlock">
+        <arguments>
+            <argument name="dataPatchExport" xsi:type="object">Nanobots\DataPatchCreator\Model\DataPatchExport\CmsBlock</argument>
+        </arguments>
+    </type>
+
+    <!-- mass action controllers -->
+    <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\MassExport\CmsPage">
+        <arguments>
+            <argument name="dataPatchExport" xsi:type="object">Nanobots\DataPatchCreator\Model\DataPatchExport\CmsPage</argument>
+        </arguments>
+    </type>
+
+    <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\MassExport\CmsBlock">
+        <arguments>
+            <argument name="dataPatchExport" xsi:type="object">Nanobots\DataPatchCreator\Model\DataPatchExport\CmsBlock</argument>
+        </arguments>
+    </type>
+
+    <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\MassExport\ProductAttribute">
+        <arguments>
+            <argument name="dataPatchExport" xsi:type="object">Nanobots\DataPatchCreator\Model\DataPatchExport\ProductAttribute</argument>
+        </arguments>
+    </type>
+
+    <!-- extend this data array to add mode image sync models like FTP / SSH / others -->
+    <type name="Nanobots\DataPatchCreator\Model\ImagesSync\ImageSync">
+        <arguments>
+            <argument name="syncModels" xsi:type="array">
+                <item name="LocalFile" xsi:type="object">Nanobots\DataPatchCreator\Model\ImagesSync\LocalFile</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

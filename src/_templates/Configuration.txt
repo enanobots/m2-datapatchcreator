@@ -1,0 +1,61 @@
+<?php
+/**
+ * Created with Nanobots_DataPatchCreator
+ * @author      Jakub Winkler <jwinkler@qsolutionsstudio.com>
+ * @author      Sebastian Strojwas <sebastian@qsolutionsstudio.com>
+ * @author      Wojtek Wnuk <wojtek@qsolutionsstudio.com>
+ *
+ * @category    {{var namespace}}
+ * @package     {{var namespace}}_{{var module}}
+ */
+
+namespace {{var namespace}}\{{var module}}\Setup\Patch\Data;
+
+use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\Setup\Patch\DataPatchInterface;
+
+class {{var class}} implements DataPatchInterface
+{
+    /** @var WriterInterface */
+    public $writer;
+
+    /**
+     * @param WriterInterface $writer
+     */
+    public function __construct(
+        WriterInterface $writer
+    ) {
+        $this->writer = $writer;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getDependencies(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAliases(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function apply(): self
+    {
+        {{for configSection in configSections }}$this->writer->save(
+            '{{var configSection.path}}',
+            '{{var configSection.value}}',
+            '{{var configSection.scope}}',
+            '{{var configSection.scope_id}}'
+        );{{/for}}
+
+        return $this;
+    }
+}
