@@ -35,6 +35,6 @@
         }
     },
     "suggest": {
-        "enanobots/m2-datapatchcreator-pagebuilder": "Magento 2 Page Builder Compatibility",
+        "enanobots/m2-datapatchcreator-pagebuilder": "Magento 2 Page Builder Compatibility"
     }
 }
