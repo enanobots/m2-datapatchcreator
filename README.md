@@ -1,12 +1,22 @@
 ![Open Source Love](https://img.shields.io/badge/open-source-lightgrey?style=for-the-badge&logo=github)
 ![](https://img.shields.io/badge/Magento-2.3.x-orange?style=for-the-badge&logo=magento)
 ![](https://img.shields.io/badge/Magento-2.4.x-orange?style=for-the-badge&logo=magento)
-### Magento 2 DataPatchCreator
+# Magento 2 DataPatchCreator
 
 When working with large teams, many times someone forgets to create
 a data patch for a cms page, block, configuration or a product attribute.\
 This module allows you to create `PHP Data Patch Files` in Magento 2 Admin panel and export
 them to `PHP` files which you can add to your code repositories.
+
+### Important:
+#### <span style="color:red ">This main version of the module **does not work with `PageBuilder` to assure `2.3.x` version compatibility**.</span>
+
+If you want to make it work with `PageBuilder` from **Magento 2.4.3** it is required to install additional composer package: 
+```
+enanobots/m2-datapatchcreator-pagebuilder
+```
+Details: https://github.com/enanobots/m2-datapatchcreator-pagebuilder-compatibility
+
 
 ### Installation
 

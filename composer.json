@@ -33,5 +33,8 @@
         "psr-4": {
             "Nanobots\\DataPatchCreator\\": "src/"
         }
+    },
+    "suggest": {
+        "enanobots/m2-datapatchcreator-pagebuilder": "Magento 2 Page Builder Compatibility",
     }
 }
