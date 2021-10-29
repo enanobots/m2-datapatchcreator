@@ -71,12 +71,13 @@ class Output extends AbstractHelper
     /**
      * Returns a path to folder template
      *
+     * @param string $templateFile
      * @return string
      */
-    private function _getTemplateFolder(): string
+    public function getTemplateFile(string $templateFile): string
     {
         return $this->moduleDir->getDir(self::MODULE) .
-            DIRECTORY_SEPARATOR . '_templates' . DIRECTORY_SEPARATOR;
+            DIRECTORY_SEPARATOR . '_templates' . DIRECTORY_SEPARATOR . $templateFile;
     }
 
     /**
@@ -102,7 +103,7 @@ class Output extends AbstractHelper
     public function generateDataPatchContent(string $templateFile): string
     {
         $fileContent = $this->fileDriver->fileGetContents(
-            $this->_getTemplateFolder() . $templateFile
+            $this->getTemplateFile($templateFile)
         );
 
         return $this->templateFilter->filter($fileContent);
