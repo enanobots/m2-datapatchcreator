@@ -51,7 +51,7 @@ does not exists, it will be created</li>
                 </field>
                 <field id="local_path" translate="label" type="text" sortOrder="50" showInDefault="1">
                     <label>Local Path for file creation</label>
-                    <comment><![CDATA[<strong>{{baseDir}}</strong> - working Magento 2 directory]]></comment>
+                    <comment><![CDATA[<strong>{{baseDir}}</strong> - working Magento 2 directory. Ensure value has a trailing slash.]]></comment>
                     <depends>
                         <field id="type">1</field>
                     </depends>
