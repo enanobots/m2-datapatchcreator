@@ -5,7 +5,8 @@
 **WARNING**: rules **ARE NOT APPLIED** upon `Patch` installation
 * **Sales Price Rules** added for single & mass data patch exports. 
 * Added new configuration option to add `timestamps` to file names. By default, it is **ENABLED**
-* small code refactoring
+* code refactoring
+* adding change log
 
 ## Version 1.0.4
 * small update to assure better module extensibility (`Helper/Output.php`)
