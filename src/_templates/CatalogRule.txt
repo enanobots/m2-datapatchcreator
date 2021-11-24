@@ -1,0 +1,109 @@
+<?php
+/**
+ * Created with Nanobots_DataPatchCreator
+ * @author      Jakub Winkler <jwinkler@qsolutionsstudio.com>
+ *
+ * @category    {{var namespace}}
+ * @package     {{var namespace}}_{{var module}}
+ */
+
+namespace {{var namespace}}\{{var module}}\Setup\Patch\Data;
+
+use Exception;
+use Magento\CatalogRule\Model\ResourceModel\Rule as CatalogRuleResource;
+use Magento\CatalogRule\Model\Rule;
+use Magento\CatalogRule\Model\RuleFactory as CatalogRuleFactory;
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Setup\Patch\DataPatchInterface;
+use Nanobots\DataPatchCreator\Model\DataPatchExport\AbstractExport;
+use Nanobots\DataPatchCreator\Model\Config\Source\RulesSettings;
+
+class {{var class}} implements DataPatchInterface
+{
+    /** @var CatalogRuleFactory */
+    protected $catalogRuleFactory;
+
+    /** @var CatalogRuleResource */
+    protected $catalogRuleResource;
+
+    /** @var State */
+    protected $state;
+
+    /** @var ScopeConfigInterface  */
+    protected $scopeConfig;
+
+    /**
+     * @param State $state
+     * @param CatalogRuleFactory $catalogRuleFactory
+     * @param CatalogRuleResource $catalogRuleResource
+     * @param ScopeConfigInterface $scopeConfig
+     */
+    public function __construct(
+        State $state,
+        CatalogRuleFactory $catalogRuleFactory,
+        CatalogRuleResource $catalogRuleResource,
+        ScopeConfigInterface $scopeConfig
+    ) {
+        $this->state = $state;
+        $this->catalogRuleFactory = $catalogRuleFactory;
+        $this->catalogRuleResource = $catalogRuleResource;
+        $this->scopeConfig = $scopeConfig;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getDependencies(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAliases(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
+    public function apply(): self
+    {
+        try {
+            $ruleId = {{var ruleId}};
+            $this->state->emulateAreaCode(Area::AREA_ADMINHTML, function() {}, []);
+            $catalogRule = $this->catalogRuleFactory->create();
+            $this->catalogRuleResource->load($catalogRule, {{var ruleId}});
+            $ruleData = {{var ruleData}};
+
+            switch ($this->scopeConfig->getValue(AbstractExport::XPATH_RULES_BEHAVIOR)) {
+                case RulesSettings::REPLACE_BY_ID: {
+                    break;
+                }
+                case RulesSettings::ADD_NEW_AND_DISABLE: {
+                    unset($ruleData['rule_id']);
+                    $ruleData['is_active'] =
+                        (int)$this->scopeConfig->getValue(AbstractExport::XPATH_RULES_DISABLE) == 1 ? 0 : 1;
+                    $catalogRule = $this->catalogRuleFactory->create();
+                    break;
+                }
+                case RulesSettings::NO_ACTION: {
+                    if ($ruleId == $catalogRule->getId()) {
+                        return $this;
+                    }
+                }
+            }
+
+            $catalogRule->addData($ruleData);
+            $this->catalogRuleResource->save($catalogRule);
+            return $this;
+        } catch (Exception $e) {
+            throw new Exception(__('Cannot Save Catalog Rule: %1', $e->getMessage()));
+        }
+    }
+}

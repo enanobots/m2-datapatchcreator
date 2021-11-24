@@ -1,0 +1,124 @@
+<?php
+/**
+ * Created with Nanobots_DataPatchCreator
+ * @author      Jakub Winkler <jwinkler@qsolutionsstudio.com>
+ *
+ * @category    {{var namespace}}
+ * @package     {{var namespace}}_{{var module}}
+ */
+
+namespace {{var namespace}}\{{var module}}\Setup\Patch\Data;
+
+use Exception;
+use Magento\SalesRule\Model\CouponFactory;
+use Magento\SalesRule\Model\ResourceModel\Coupon as CouponResource;
+use Magento\SalesRule\Model\ResourceModel\Rule as SalesRuleResource;
+use Magento\SalesRule\Model\Rule;
+use Magento\SalesRule\Model\RuleFactory as SalesRuleFactory;
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Setup\Patch\DataPatchInterface;
+use Nanobots\DataPatchCreator\Model\DataPatchExport\AbstractExport;
+use Nanobots\DataPatchCreator\Model\Config\Source\RulesSettings;
+
+class {{var class}} implements DataPatchInterface
+{
+    /** @var SalesRuleFactory */
+    protected $salesRuleFactory;
+
+    /** @var SalesRuleFactory */
+    protected $salesRuleResource;
+
+    /** @var CouponFactory */
+    protected $couponFactory;
+
+    /** @var CouponResource */
+    protected $couponResource;
+
+    /** @var ScopeConfigInterface  */
+    protected $scopeConfig;
+
+    /**
+     * @param CouponFactory $couponFactory
+     * @param CouponResource $couponResource
+     * @param SalesRuleFactory $salesRuleFactory
+     * @param SalesRuleResource $salesRuleResource
+     * @param ScopeConfigInterface $scopeConfig
+     */
+    public function __construct(
+        CouponFactory $couponFactory,
+        CouponResource $couponResource,
+        SalesRuleFactory $salesRuleFactory,
+        SalesRuleResource $salesRuleResource,
+        ScopeConfigInterface $scopeConfig
+    ) {
+        $this->couponFactory = $couponFactory;
+        $this->couponResource = $couponResource;
+        $this->salesRuleFactory = $salesRuleFactory;
+        $this->salesRuleResource = $salesRuleResource;
+        $this->scopeConfig = $scopeConfig;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getDependencies(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAliases(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
+    public function apply(): self
+    {
+        try {
+            $ruleId = {{var ruleId}};
+            $salesRule = $this->salesRuleFactory->create();
+            $this->salesRuleResource->load($salesRule, {{var ruleId}});
+            $ruleData = {{var ruleData}};
+
+            switch ($this->scopeConfig->getValue(AbstractExport::XPATH_RULES_BEHAVIOR)) {
+                case RulesSettings::REPLACE_BY_ID: {
+                    break;
+                }
+                case RulesSettings::ADD_NEW_AND_DISABLE: {
+                    unset($ruleData['rule_id']);
+                    $ruleData['is_active'] =
+                        (int)$this->scopeConfig->getValue(AbstractExport::XPATH_RULES_DISABLE) == 1 ? 0 : 1;
+                    $salesRule = $this->salesRuleFactory->create();
+                    break;
+                }
+                case RulesSettings::NO_ACTION: {
+                    if ($ruleId == $salesRule->getId()) {
+                        return $this;
+                    }
+                }
+            }
+
+            $salesRule->addData($ruleData);
+            $this->salesRuleResource->save($salesRule);
+
+            {{for couponData in couponsData }}
+            $coupon = $this->couponFactory->create();
+            $this->couponResource->load($coupon, '{{var couponData.code}}', 'code');
+            $coupon->addData({{var couponData.data}});
+            $coupon->setRule($salesRule);
+            $this->couponResource->save($coupon); {{/for}}
+
+            return $this;
+        } catch (Exception $e) {
+            throw new Exception(__('Cannot Save Sales Rule: %1', $e->getMessage()));
+        }
+    }
+}

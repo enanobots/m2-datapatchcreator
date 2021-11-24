@@ -18,11 +18,16 @@
                 <module>Nanobots_DataPatchCreator</module>
             </settings>
             <export>
+                <timestamp>1</timestamp>
                 <namespace>Nanobots</namespace>
                 <module>DataPatchCreator</module>
                 <type>0</type>
                 <local_path>{{baseDir}}/var/patches/</local_path>
             </export>
+            <rules>
+                <behavior>0</behavior>
+                <active>1</active>
+            </rules>
             <images>
                 <swatches>1</swatches>
                 <sync>1</sync>

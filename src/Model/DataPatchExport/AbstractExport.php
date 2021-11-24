@@ -33,6 +33,9 @@ abstract class AbstractExport implements DataPatchExportInterface
     public const XPATH_MODULE = 'nanobots_datapatchcreator/export/module';
 
     /** @var string  */
+    public const XPATH_EXPORT_USE_TIMESTAMP = 'nanobots_datapatchcreator/export/timestamp';
+
+    /** @var string  */
     public const XPATH_EXPORT_LOCAL_PATH = 'nanobots_datapatchcreator/export/local_path';
 
     /** @var string  */
@@ -43,6 +46,12 @@ abstract class AbstractExport implements DataPatchExportInterface
 
     /** @var string  */
     public const XPATH_CONFIG_EXPORT_SWATCHES = 'nanobots_datapatchcreator/images/swatches';
+
+    /** @var string  */
+    public const XPATH_RULES_BEHAVIOR = 'nanobots_datapatchcreator/rules/behavior';
+
+    /** @var string  */
+    public const XPATH_RULES_DISABLE = 'nanobots_datapatchcreator/rules/active';
 
     /** @var ScopeConfigInterface  */
     protected $scopeConfig;
@@ -109,7 +118,8 @@ abstract class AbstractExport implements DataPatchExportInterface
     public function getDataPatchClassName(): string
     {
         return $this->getShortClassName() .
-            implode('', array_map('ucfirst', explode('_', $this->getIdentifier())));
+            implode('', array_map('ucfirst', explode('_', $this->getIdentifier()))) .
+            ($this->shouldAddTimestampToFilename() ? strtotime(date('Y-m-d H:i:s')) : '');
     }
 
     /**
@@ -140,6 +150,14 @@ abstract class AbstractExport implements DataPatchExportInterface
     public function isImageSyncEnabled(): bool
     {
         return (int)$this->scopeConfig->getValue(self::XPATH_CONFIG_IMAGE_SYNC_ENABLED) === 1;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldAddTimestampToFilename(): bool
+    {
+        return (int)$this->scopeConfig->getValue(self::XPATH_EXPORT_USE_TIMESTAMP) === 1;
     }
 
     /**

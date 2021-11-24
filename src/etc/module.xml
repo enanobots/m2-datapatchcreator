@@ -14,9 +14,11 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
     <module name="Nanobots_DataPatchCreator">
         <sequence>
+            <module name="Magento_Catalog" />
+            <module name="Magento_CatalogRule" />
             <module name="Magento_Cms" />
             <module name="Magento_Config" />
-            <module name="Magento_Catalog" />
+            <module name="Magento_SalesRule" />
         </sequence>
     </module>
 </config>

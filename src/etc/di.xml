@@ -35,6 +35,18 @@
         </arguments>
     </type>
 
+    <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\Export\CatalogRule">
+        <arguments>
+            <argument name="dataPatchExport" xsi:type="object">Nanobots\DataPatchCreator\Model\DataPatchExport\CatalogRule</argument>
+        </arguments>
+    </type>
+
+    <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\Export\SalesRule">
+        <arguments>
+            <argument name="dataPatchExport" xsi:type="object">Nanobots\DataPatchCreator\Model\DataPatchExport\SalesRule</argument>
+        </arguments>
+    </type>
+
     <!-- mass action controllers -->
     <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\MassExport\CmsPage">
         <arguments>
@@ -51,6 +63,18 @@
     <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\MassExport\ProductAttribute">
         <arguments>
             <argument name="dataPatchExport" xsi:type="object">Nanobots\DataPatchCreator\Model\DataPatchExport\ProductAttribute</argument>
+        </arguments>
+    </type>
+
+    <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\MassExport\CatalogRule">
+        <arguments>
+            <argument name="dataPatchExport" xsi:type="object">Nanobots\DataPatchCreator\Model\DataPatchExport\CatalogRule</argument>
+        </arguments>
+    </type>
+
+    <type name="Nanobots\DataPatchCreator\Controller\Adminhtml\MassExport\SalesRule">
+        <arguments>
+            <argument name="dataPatchExport" xsi:type="object">Nanobots\DataPatchCreator\Model\DataPatchExport\SalesRule</argument>
         </arguments>
     </type>
 

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Q-Solutions Studio: eCommerce Nanobots. All rights reserved.
+ *
+ * @category    Nanobots
+ * @package     Nanobots_DataPatchCreator
+ * @author      Jakub Winkler <jwinkler@qsolutionsstudio.com>
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="adminhtml.block.promo.quote.grid">
+            <block class="Magento\Backend\Block\Widget\Grid\Massaction" name="adminhtml.widget.instance.grid.massactions" as="grid.massaction">
+                <arguments>
+                    <argument name="massaction_id_field" xsi:type="string">rule_id</argument>
+                    <argument name="form_field_name" xsi:type="string">rule_id</argument>
+                    <argument name="use_select_all" xsi:type="string">1</argument>
+                    <argument name="options" xsi:type="array">
+                        <item name="delete" xsi:type="array">
+                            <item name="label" xsi:type="string" translate="true">Export to DataPatch</item>
+                            <item name="url" xsi:type="string">dataPatchCreator/massExport/salesRule</item>
+                            <item name="selected" xsi:type="string">0</item>
+                            <item name="confirm" xsi:type="string" translate="true">Are you sure you want export cart price rule(s) to data patche(s)?</item>
+                        </item>
+                    </argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

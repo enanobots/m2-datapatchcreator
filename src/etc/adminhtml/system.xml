@@ -13,7 +13,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <tab id="nanobots" sortOrder="100" translate="label" class="nanobots">
+        <tab id="nanobots" sortOrder="1000" translate="label" class="nanobots">
             <label>Nanobots</label>
         </tab>
         <section id="nanobots_datapatchcreator" translate="label" sortOrder="1000" showInDefault="1">
@@ -30,7 +30,12 @@
             </group>
 
             <group id="export" translate="label" type="text" sortOrder="10" showInDefault="1">
-                <label>Export Configuration</label>
+                <label>Main Configuration</label>
+                <field id="timestamp" translate="label comment" type="select" sortOrder="5" showInDefault="1">
+                    <label>Use Timestamp</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Current timestamp will be added to generated PHP files</comment>
+                </field>
                 <field id="namespace" translate="label comment" type="text" sortOrder="10" showInDefault="1">
                     <label>Module Namespace</label>
                     <comment>You can specify your module / company namespace for data patch creation</comment>
@@ -51,7 +56,7 @@ does not exists, it will be created</li>
                 </field>
                 <field id="local_path" translate="label" type="text" sortOrder="50" showInDefault="1">
                     <label>Local Path for file creation</label>
-                    <comment><![CDATA[<strong>{{baseDir}}</strong> - working Magento 2 directory. Ensure value has a trailing slash.]]></comment>
+                    <comment><![CDATA[<strong>{{baseDir}}</strong> - working Magento 2 directory]]></comment>
                     <depends>
                         <field id="type">1</field>
                     </depends>
@@ -59,6 +64,24 @@ does not exists, it will be created</li>
                 <depends>
                     <field id="*/settings/enabled">1</field>
                 </depends>
+            </group>
+
+            <group id="rules" translate="label" type="text" sortOrder="20" showInDefault="1">
+                <label>Catalog and Sales Rule DataPatch Creation Settings</label>
+                <field id="behavior" translate="label comment" type="select" sortOrder="1" showInDefault="1">
+                    <label>Catalog and Sales Rules Patch Creation</label>
+                    <source_model>Nanobots\DataPatchCreator\Model\Config\Source\RulesSettings</source_model>
+                    <comment>Determine how patch files manage catalog and sales rules</comment>
+                </field>
+                <field id="active" translate="label comment" type="select" sortOrder="10" showInDefault="1">
+                    <label>Disable Catalog and Sales Rules Created by Data Patches</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="coupon" translate="label comment" type="select" sortOrder="20" showInDefault="1">
+                    <label>Coupon Data Patch Creation </label>
+                    <source_model>Nanobots\DataPatchCreator\Model\Config\Source\CouponSettings</source_model>
+                    <comment>Determine how patch files manage coupon codes assigned to sales rules</comment>
+                </field>
             </group>
 
             <group id="images" translate="label" type="text" sortOrder="100" showInDefault="1">
