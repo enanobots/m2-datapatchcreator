@@ -14,7 +14,7 @@
             <action name="export">
                 <settings>
                     <confirm>
-                        <message translate="true">Are you sure you want to delete selected items?</message>
+                        <message translate="true">Are you sure you want to export selected items?</message>
                         <title translate="true">Export to data patches</title>
                     </confirm>
                     <url path="dataPatchCreator/massExport/CmsPage"/>
