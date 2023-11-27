@@ -13,6 +13,7 @@ namespace Nanobots\DataPatchCreator\Model\ImagesSync;
 
 class ImageSync
 {
+    private const NO_SYNC_MODEL = 'NoSync';
     /*** @var ImageSyncInterface[] */
     protected $syncModels;
 
@@ -38,11 +39,17 @@ class ImageSync
     /**
      * Get ImageSyncInterface
      *
-     * @param string $syncModel
+     * @param string|null $syncModel
      * @return ImageSyncInterface
      */
-    public function getSyncModel(string $syncModel): ImageSyncInterface
+    public function getSyncModel(?string $syncModel): ImageSyncInterface
     {
+        if (empty($syncModel)
+            || !is_array($this->syncModels)
+            || empty($this->syncModels)
+            || !array_key_exists($syncModel, $this->syncModels)) {
+            return $this->syncModels[self::NO_SYNC_MODEL];
+        }
         return $this->syncModels[$syncModel];
     }
 }

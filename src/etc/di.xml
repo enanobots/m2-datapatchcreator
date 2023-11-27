@@ -83,6 +83,7 @@
         <arguments>
             <argument name="syncModels" xsi:type="array">
                 <item name="LocalFile" xsi:type="object">Nanobots\DataPatchCreator\Model\ImagesSync\LocalFile</item>
+                <item name="NoSync" xsi:type="object">Nanobots\DataPatchCreator\Model\ImagesSync\NoSync</item>
             </argument>
         </arguments>
     </type>
