@@ -118,7 +118,7 @@ abstract class AbstractExport implements DataPatchExportInterface
     public function getDataPatchClassName(): string
     {
         return $this->getShortClassName() .
-            implode('', array_map('ucfirst', explode('_', $this->getIdentifier()))) .
+            implode('', array_map('ucfirst', explode('_', preg_replace("/[^a-z0-9\_\-\.]/i", '', $this->getIdentifier())))) .
             ($this->shouldAddTimestampToFilename() ? strtotime(date('Y-m-d H:i:s')) : '');
     }
 
